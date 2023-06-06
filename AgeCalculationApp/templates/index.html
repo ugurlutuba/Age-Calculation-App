@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Age Calculation Application</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-image:url('static/img/bg-2.jpg') ;
+            color: #fff;
+            background-size:cover;
+            background-attachment:fixed;
+            
+        }
+
+        .container {
+            max-width: 400px;
+            margin-top: 100px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        h3 {
+            font-weight: bold;
+            color:#333;
+        }
+
+        #result {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            background-color: rgba(37, 2, 20, 0.65);
+            color: #fff;
+            font-weight: bold;
+            margin-left:150px;
+            margin-top:50px;
+        }
+
+        .btn:hover {
+            background-color: rgba(240, 5, 126, 0.74);
+            color: #fff;
+        }
+       
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Age Calculation App</h1>
+        <form id="age-form" action="/calculate" method="POST">
+            <div class="mb-3 row">
+                <div class="col">
+                    <label for="day" class="form-label fs-5">Day:</label>
+                    <select class="form-select" id="day" name="day" required>
+                        <option value="">Select a day</option>
+                        {% for day in range(1, 32) %}
+                            <option value="{{ day }}">{{ day }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col">
+                    <label for="month" class="form-label fs-5">Month:</label>
+                    <select class="form-select" id="month" name="month" required>
+                        <option value="" >Select a month</option>
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label for="year" class="form-label fs-5">Year:</label>
+                    <select class="form-select" id="year" name="year" required>
+                        <option value="">Select a year</option>
+                        {% for year in range(1950, current_year + 1) %}
+                            <option value="{{ year }}">{{ year }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-block">Calculate</button>
+        </form>
+        <div id="result">
+            <h3>Your age: {{ age_year }}  {{ age_month }}  {{ age_day }}</h3>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById("age-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            calculateAge();
+        });
+
+        function calculateAge() {
+            var day = parseInt(document.getElementById("day").value);
+            var month = parseInt(document.getElementById("month").value);
+            var year = parseInt(document.getElementById("year").value);
+
+            var today = new Date();
+            var currentYear = today.getFullYear();
+            var currentMonth = today.getMonth() + 1;
+            var currentDay = today.getDate();
+
+            var age_year = currentYear - year;
+            var age_month = currentMonth - month;
+            var age_day = currentDay - day;
+
+            if (age_day < 0) {
+                age_month -= 1;
+                var days_in_previous_month = new Date(currentYear, currentMonth - 1, 0).getDate();
+                age_day += days_in_previous_month;
+            }
+
+            if (age_month < 0) {
+                age_year -= 1;
+                age_month += 12;
+            }
+
+            document.getElementById("result").innerHTML = "<h3>Your age: " + age_year + " years " + age_month + " months " + age_day + " days</h3>";
+        }
+    </script>
+</body>
+</html>
